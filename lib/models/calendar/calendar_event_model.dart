@@ -66,6 +66,19 @@ class CalendarEvent {
   /// Can be `null` if the organizer is unknown or not provided.
   final Organizer? organizer;
 
+  /// The location of the event.
+  ///
+  /// Can be `null` if the location is unknown or not provided.
+  final Location? location;
+
+  /// The locations where the event is held or attended from. The location and
+  /// locations properties always correspond with each other. If you update the
+  /// location property, any prior locations in the locations collection would
+  /// be removed and replaced by the new location value.
+  ///
+  /// Can be `null` if the locations are unknown or not provided.
+  final List<Location>? locations;
+
   /// Creates a new instance of `CalendarEvent`.
   ///
   /// All parameters are optional and can be `null`.
@@ -82,6 +95,8 @@ class CalendarEvent {
     this.endDateTime,
     this.attendees,
     this.organizer,
+    this.location,
+    this.locations,
   });
 
   /// Creates a new instance of `CalendarEvent` from a JSON object.
@@ -90,6 +105,8 @@ class CalendarEvent {
   /// The '[start]' and 'end' keys should map to JSON objects with a 'dateTime' key.
   /// The '[attendees]' key should map to a list of JSON objects that can be converted to `[Attendee]` objects.
   /// The '[organizer]' key should map to a JSON object that can be converted to an `[Organizer]` object.
+  /// The '[location]' key should map to a JSON object that can be converted to a `[Location]` object.
+  /// The '[locations]' key should map to a list of JSON objects that can be converted to `[Location]` objects.
   factory CalendarEvent.fromJson(Map<String, dynamic> json) {
     return CalendarEvent(
       id: json['id'],
@@ -109,6 +126,13 @@ class CalendarEvent {
           : null,
       organizer: json['organizer'] != null
           ? Organizer.fromJson(json['organizer'])
+          : null,
+      location:
+          json['location'] != null ? Location.fromJson(json['location']) : null,
+      locations: json['locations'] != null
+          ? (json['locations'] as List)
+              .map((location) => Location.fromJson(location))
+              .toList()
           : null,
     );
   }
@@ -135,6 +159,8 @@ class CalendarEvent {
       'end': endDateTime != null ? {'dateTime': endDateTime} : null,
       'attendees': attendees?.map((attendee) => attendee.toJson()).toList(),
       'organizer': organizer?.toJson(),
+      'location': location?.toJson(),
+      'locations': locations?.map((location) => location.toJson()).toList(),
     };
   }
 }
